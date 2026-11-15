@@ -69,3 +69,16 @@ Screenshot to save: screenshots/06-category-cache.png
 
 Test status: Waiting for test confirmation.
 Screenshot to save: screenshots/07-create-command.png
+
+## Step 8: Question Loading
+- Added a Question class.
+- Added question loading to OpenTdbService.
+- Requested multiple-choice questions.
+- Decoded question text and answers using Java Base64.
+- Combined and shuffled answer options.
+- Checked the API response code and question count.
+- Added a live API test.
+- Challenge creation is not connected yet.
+
+Test status: Waiting for test confirmation.
+Screenshot to save: screenshots/08-question-loading.png
