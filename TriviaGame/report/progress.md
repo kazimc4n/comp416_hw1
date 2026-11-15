@@ -14,3 +14,13 @@ Screenshot: screenshots/01-project-setup.png
 
 Test status: Waiting for test confirmation.
 Screenshot to save: screenshots/02-tcp-connection.png
+
+## Step 3: Multiple Client Connections
+- Added a loop to accept new connections.
+- Added a separate handler thread for each client.
+- Assigned a unique ID to each client.
+- Added a 90-second socket read timeout.
+- Added a manual disconnect action using Enter.
+
+Test status: Waiting for test confirmation.
+Screenshot to save: screenshots/03-multiple-clients.png

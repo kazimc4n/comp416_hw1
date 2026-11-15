@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ClientMain {
     public static void main(String[] args) {
@@ -8,8 +9,15 @@ public class ClientMain {
 
         System.out.println("Connecting to the server...");
 
-        try (Socket socket = new Socket(host, port)) {
+        try (Socket socket = new Socket(host, port);
+             Scanner console = new Scanner(System.in)) {
+
             System.out.println("Connected to the server.");
+            System.out.println("Press Enter to disconnect.");
+
+            if (console.hasNextLine()) {
+                console.nextLine();
+            }
         } catch (IOException e) {
             System.out.println("Client error: " + e.getMessage());
         }
