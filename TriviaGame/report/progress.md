@@ -82,3 +82,17 @@ Screenshot to save: screenshots/07-create-command.png
 
 Test status: Waiting for test confirmation.
 Screenshot to save: screenshots/08-question-loading.png
+
+## Step 9: Challenge Creation
+- Added a challenge manager thread.
+- Added a blocking queue for creation requests.
+- Added a thread-safe challenge registry.
+- Added a separate thread and request queue for each challenge.
+- Connected /create to command validation and question loading.
+- Registered challenges only after questions were loaded.
+- Returned the challenge ID after successful creation.
+- Added cleanup when the creator disconnects.
+- Joining and gameplay are not implemented yet.
+
+Check status: Waiting for run confirmation.
+Screenshot to save: screenshots/09-create-challenge.png

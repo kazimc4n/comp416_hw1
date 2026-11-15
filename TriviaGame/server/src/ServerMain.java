@@ -10,13 +10,22 @@ public class ServerMain {
         try {
             System.out.println("Loading categories...");
 
-            OpenTdbService triviaService = new OpenTdbService();
+            OpenTdbService service = new OpenTdbService();
 
             System.out.println(
                     "Categories loaded: "
-                            + triviaService.getCategoryCount());
+                            + service.getCategoryCount());
 
             try (ServerSocket serverSocket = new ServerSocket(port)) {
+                ChallengeManager manager =
+                        new ChallengeManager(service);
+
+                Thread managerThread =
+                        new Thread(manager, "challenge-manager");
+
+                managerThread.setDaemon(true);
+                managerThread.start();
+
                 System.out.println(
                         "Server is listening on port " + port);
 
@@ -24,8 +33,8 @@ public class ServerMain {
                     Socket clientSocket = serverSocket.accept();
                     int clientId = nextClientId++;
 
-                    ClientHandler handler =
-                            new ClientHandler(clientSocket, clientId);
+                    ClientHandler handler = new ClientHandler(
+                            clientSocket, clientId, service, manager);
 
                     Thread thread =
                             new Thread(handler, "client-" + clientId);
