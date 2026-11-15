@@ -24,3 +24,15 @@ Screenshot to save: screenshots/02-tcp-connection.png
 
 Test status: Waiting for test confirmation.
 Screenshot to save: screenshots/03-multiple-clients.png
+
+## Step 4: Protocol Reader and Writer
+- Added a Protocol helper to both projects.
+- Added the 416END message marker.
+- Used UTF-8 byte lengths for response bodies.
+- Added exact-length body reading.
+- Added tests for consecutive messages and empty bodies.
+- Added a UTF-8 test and simulated small body reads.
+- Socket integration is not implemented in this step.
+
+Test status: Waiting for test confirmation.
+Screenshot to save: screenshots/04-protocol-tests.png
