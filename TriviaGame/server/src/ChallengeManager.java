@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -34,8 +35,85 @@ public class ChallengeManager implements Runnable {
         challenges.put(id, challenge);
     }
 
+    public Challenge getChallenge(int id) {
+        return challenges.get(id);
+    }
+
     public void remove(int id) {
         challenges.remove(id);
+    }
+
+    public String list(String command) {
+        List<String> tokens = CreateCommand.tokenize(command);
+
+        if (tokens.isEmpty()
+                || !tokens.get(0).equals("/list")
+                || tokens.size() % 2 == 0) {
+            throw new IllegalArgumentException(
+                    "Use /list [-category \"name\"] [-difficulty easy]");
+        }
+
+        String category = null;
+        String difficulty = null;
+
+        for (int i = 1; i < tokens.size(); i += 2) {
+            String option = tokens.get(i);
+            String value = tokens.get(i + 1);
+
+            switch (option) {
+                case "-category":
+                    if (category != null) {
+                        throw new IllegalArgumentException(
+                                "Duplicate category.");
+                    }
+
+                    if (service.getCategoryId(value) == null) {
+                        throw new IllegalArgumentException(
+                                "Unknown category.");
+                    }
+
+                    category = value;
+                    break;
+
+                case "-difficulty":
+                    if (difficulty != null) {
+                        throw new IllegalArgumentException(
+                                "Duplicate difficulty.");
+                    }
+
+                    if (!value.equalsIgnoreCase("easy")
+                            && !value.equalsIgnoreCase("medium")
+                            && !value.equalsIgnoreCase("hard")) {
+                        throw new IllegalArgumentException(
+                                "Difficulty must be easy, medium or hard.");
+                    }
+
+                    difficulty = value;
+                    break;
+
+                default:
+                    throw new IllegalArgumentException(
+                            "Unknown option: " + option);
+            }
+        }
+
+        StringBuilder result = new StringBuilder();
+
+        for (Challenge challenge : challenges.values()) {
+            if (challenge.matches(category, difficulty)) {
+                if (result.length() > 0) {
+                    result.append("\n");
+                }
+
+                result.append(challenge.getSummary());
+            }
+        }
+
+        if (result.length() == 0) {
+            return "No challenges found.";
+        }
+
+        return result.toString();
     }
 
     @Override

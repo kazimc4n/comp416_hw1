@@ -35,6 +35,21 @@ public class Challenge implements Runnable {
         requests.offer(() -> {});
     }
 
+    public boolean matches(String category, String difficulty) {
+        return !stopped
+                && (category == null
+                || settings.category.equalsIgnoreCase(category))
+                && (difficulty == null
+                || settings.difficulty.equalsIgnoreCase(difficulty));
+    }
+
+    public String getSummary() {
+        return "ID: " + id
+                + " | Category: " + settings.category
+                + " | Difficulty: " + settings.difficulty
+                + " | Players: 1/2";
+    }
+
     @Override
     public void run() {
         try {

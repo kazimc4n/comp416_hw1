@@ -43,6 +43,17 @@ public class ClientHandler implements Runnable {
                     break;
                 }
 
+                if (command.equals("/list")
+                        || command.startsWith("/list ")
+                        || command.startsWith("/list\t")) {
+                    try {
+                        send(200, "OK", manager.list(command));
+                    } catch (IllegalArgumentException e) {
+                        send(400, "BAD_REQUEST", e.getMessage());
+                    }
+                    continue;
+                }
+
                 if (command.equals("/create")
                         || command.startsWith("/create ")
                         || command.startsWith("/create\t")) {

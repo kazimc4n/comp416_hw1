@@ -92,7 +92,7 @@ public class CreateCommand {
         return new CreateCommand(category.trim(), difficulty, count);
     }
 
-    private static List<String> tokenize(String command) {
+    static List<String> tokenize(String command) {
         List<String> tokens = new ArrayList<>();
         StringBuilder current = new StringBuilder();
         boolean quoted = false;

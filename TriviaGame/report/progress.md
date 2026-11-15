@@ -96,3 +96,14 @@ Screenshot to save: screenshots/08-question-loading.png
 
 Check status: Waiting for run confirmation.
 Screenshot to save: screenshots/09-create-challenge.png
+
+## Step 10: List Challenges
+- Added the /list command.
+- Added optional category and difficulty filters.
+- Reused the existing command tokenizer.
+- Read challenge information from the in-memory registry.
+- Displayed the challenge ID, category, difficulty and player count.
+- Joining is not implemented yet.
+
+Check status: Waiting for run confirmation.
+Screenshot to save: screenshots/10-list-challenges.png
