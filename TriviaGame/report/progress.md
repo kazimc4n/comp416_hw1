@@ -120,3 +120,16 @@ Screenshot to save: screenshots/10-list-challenges.png
 
 Check status: Waiting for run confirmation.
 Screenshot to save: screenshots/11-join-challenge.png
+
+## Step 12: Game Flow
+- Added answer and leave requests to the challenge queue.
+- Added a 30-second deadline for each question.
+- Accepted only the first valid answer from each player.
+- Awarded one point for each correct answer.
+- Sent question results and current scores.
+- Sent final scores and the winner or draw result.
+- Ended the challenge when a player left or disconnected.
+- Kept client connections open after the game.
+
+Check status: Waiting for run confirmation.
+Screenshot to save: screenshots/12-game-results.png
