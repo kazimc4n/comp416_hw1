@@ -47,3 +47,14 @@ Screenshot to save: screenshots/04-protocol-tests.png
 
 Test status: Waiting for test confirmation.
 Screenshot to save: screenshots/05-command-response.png
+
+## Step 6: Category Cache
+- Added Gson to read JSON data.
+- Loaded category names and IDs when the server starts.
+- Stored categories in memory.
+- Added a category ID lookup method.
+- Stopped startup if category loading fails.
+- Kept the existing client connection behavior.
+
+Test status: Waiting for test confirmation.
+Screenshot to save: screenshots/06-category-cache.png

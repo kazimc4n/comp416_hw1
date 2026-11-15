@@ -7,20 +7,31 @@ public class ServerMain {
         int port = 41601;
         int nextClientId = 1;
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server is listening on port " + port);
+        try {
+            System.out.println("Loading categories...");
 
-            while (true) {
-                Socket clientSocket = serverSocket.accept();
-                int clientId = nextClientId++;
+            OpenTdbService triviaService = new OpenTdbService();
 
-                ClientHandler handler =
-                        new ClientHandler(clientSocket, clientId);
+            System.out.println(
+                    "Categories loaded: "
+                            + triviaService.getCategoryCount());
 
-                Thread thread =
-                        new Thread(handler, "client-" + clientId);
+            try (ServerSocket serverSocket = new ServerSocket(port)) {
+                System.out.println(
+                        "Server is listening on port " + port);
 
-                thread.start();
+                while (true) {
+                    Socket clientSocket = serverSocket.accept();
+                    int clientId = nextClientId++;
+
+                    ClientHandler handler =
+                            new ClientHandler(clientSocket, clientId);
+
+                    Thread thread =
+                            new Thread(handler, "client-" + clientId);
+
+                    thread.start();
+                }
             }
         } catch (IOException e) {
             System.out.println("Server error: " + e.getMessage());
