@@ -58,3 +58,14 @@ Screenshot to save: screenshots/05-command-response.png
 
 Test status: Waiting for test confirmation.
 Screenshot to save: screenshots/06-category-cache.png
+
+## Step 7: Create Command Parsing
+- Added a parser for the /create command.
+- Supported quoted category names.
+- Checked required options, difficulty and question count.
+- Rejected duplicate options and missing closing quotes.
+- Added a small parser test.
+- Challenge creation is not connected to the server yet.
+
+Test status: Waiting for test confirmation.
+Screenshot to save: screenshots/07-create-command.png
