@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.List;
 
 public class ClientHandler implements Runnable {
     private final Socket socket;
@@ -9,6 +10,7 @@ public class ClientHandler implements Runnable {
     private final ChallengeManager manager;
 
     private Challenge challenge;
+    private boolean connected = true;
 
     public ClientHandler(
             Socket socket,
@@ -43,26 +45,42 @@ public class ClientHandler implements Runnable {
                     break;
                 }
 
-                if (command.equals("/list")
-                        || command.startsWith("/list ")
-                        || command.startsWith("/list\t")) {
-                    try {
-                        send(200, "OK", manager.list(command));
-                    } catch (IllegalArgumentException e) {
-                        send(400, "BAD_REQUEST", e.getMessage());
-                    }
+                List<String> tokens;
+
+                try {
+                    tokens = CreateCommand.tokenize(command);
+                } catch (IllegalArgumentException e) {
+                    send(400, "BAD_REQUEST", e.getMessage());
                     continue;
                 }
 
-                if (command.equals("/create")
-                        || command.startsWith("/create ")
-                        || command.startsWith("/create\t")) {
-                    handleCreate(command);
-                } else {
-                    send(
-                            400,
-                            "BAD_REQUEST",
-                            "Unknown or not yet supported command.");
+                if (tokens.isEmpty()) {
+                    send(400, "BAD_REQUEST", "Empty command.");
+                    continue;
+                }
+
+                switch (tokens.get(0)) {
+                    case "/create":
+                        handleCreate(command);
+                        break;
+
+                    case "/list":
+                        try {
+                            send(200, "OK", manager.list(command));
+                        } catch (IllegalArgumentException e) {
+                            send(400, "BAD_REQUEST", e.getMessage());
+                        }
+                        break;
+
+                    case "/join":
+                        handleJoin(tokens);
+                        break;
+
+                    default:
+                        send(
+                                400,
+                                "BAD_REQUEST",
+                                "Unknown or not yet supported command.");
                 }
             }
         } catch (SocketTimeoutException e) {
@@ -71,23 +89,14 @@ public class ClientHandler implements Runnable {
             System.out.println(
                     "Client " + clientId + " error: " + e.getMessage());
         } finally {
-            stopChallenge();
+            disconnect();
 
             System.out.println(
                     "Client " + clientId + " disconnected.");
         }
     }
 
-    private synchronized void handleCreate(String command)
-            throws IOException {
-        if (challenge != null) {
-            send(
-                    400,
-                    "BAD_REQUEST",
-                    "You already have a challenge.");
-            return;
-        }
-
+    private void handleCreate(String command) throws IOException {
         CreateCommand settings;
 
         try {
@@ -102,8 +111,55 @@ public class ClientHandler implements Runnable {
             return;
         }
 
-        challenge = manager.newChallenge(this, settings);
-        manager.submit(challenge);
+        Challenge created = manager.newChallenge(this, settings);
+
+        if (!claimChallenge(created)) {
+            send(400, "BAD_REQUEST", "You already have a challenge.");
+            return;
+        }
+
+        manager.submit(created);
+    }
+
+    private void handleJoin(List<String> tokens) throws IOException {
+        if (tokens.size() != 3 || !tokens.get(1).equals("-id")) {
+            send(400, "BAD_REQUEST", "Use /join -id number");
+            return;
+        }
+
+        int id;
+
+        try {
+            id = Integer.parseInt(tokens.get(2));
+        } catch (NumberFormatException e) {
+            send(400, "BAD_REQUEST", "ID must be a whole number.");
+            return;
+        }
+
+        if (id <= 0) {
+            send(400, "BAD_REQUEST", "ID must be greater than zero.");
+            return;
+        }
+
+        Challenge target = manager.getChallenge(id);
+
+        if (target == null) {
+            send(404, "NOT_FOUND", "Challenge was not found.");
+            return;
+        }
+
+        if (!target.requestJoin(this)) {
+            send(404, "NOT_FOUND", "Challenge is closed.");
+        }
+    }
+
+    public synchronized boolean claimChallenge(Challenge target) {
+        if (!connected || challenge != null) {
+            return false;
+        }
+
+        challenge = target;
+        return true;
     }
 
     public synchronized void clearChallenge(Challenge finished) {
@@ -112,10 +168,11 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void stopChallenge() {
+    private void disconnect() {
         Challenge current;
 
         synchronized (this) {
+            connected = false;
             current = challenge;
         }
 

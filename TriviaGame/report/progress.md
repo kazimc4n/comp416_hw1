@@ -107,3 +107,16 @@ Screenshot to save: screenshots/09-create-challenge.png
 
 Check status: Waiting for run confirmation.
 Screenshot to save: screenshots/10-list-challenges.png
+
+## Step 11: Join a Challenge
+- Added /join -id.
+- Processed join requests in the challenge thread.
+- Added the second player to the challenge.
+- Rejected joins after the challenge started.
+- Sent the same first question to both players.
+- Hid started challenges from the waiting challenge list.
+- Updated the displayed player count.
+- Answer handling and question timing are not implemented yet.
+
+Check status: Waiting for run confirmation.
+Screenshot to save: screenshots/11-join-challenge.png
