@@ -11,7 +11,8 @@ public class ClientMain {
 
         try (Socket socket = new Socket(host, port)) {
             System.out.println("Connected to the server.");
-            System.out.println("Enter a command. Use /exit to leave.");
+            System.out.println("Commands: /create, /list, /join,"
+                    + " /answer, /leave, /exit");
 
             Thread inputThread = new Thread(
                     () -> readCommands(socket), "console-input");
@@ -23,13 +24,7 @@ public class ClientMain {
 
             while ((response = Protocol.readResponse(
                     socket.getInputStream())) != null) {
-
-                System.out.println(
-                        response.code + " " + response.message);
-
-                if (!response.body.isEmpty()) {
-                    System.out.println(response.body);
-                }
+                showResponse(response);
             }
 
             System.out.println("Server closed the connection.");
@@ -38,6 +33,33 @@ public class ClientMain {
         }
 
         System.out.println("Client stopped.");
+    }
+
+    private static void showResponse(Protocol.Response response) {
+        System.out.println();
+
+        switch (response.code) {
+            case 210:
+                System.out.println("--- QUESTION ---");
+                break;
+
+            case 211:
+                System.out.println("--- RESULT ---");
+                break;
+
+            case 212:
+                System.out.println("--- GAME OVER ---");
+                break;
+
+            default:
+                System.out.println("--- RESPONSE ---");
+        }
+
+        System.out.println(response.code + " " + response.message);
+
+        if (!response.body.isEmpty()) {
+            System.out.println(response.body);
+        }
     }
 
     private static void readCommands(Socket socket) {

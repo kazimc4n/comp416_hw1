@@ -133,3 +133,16 @@ Screenshot to save: screenshots/11-join-challenge.png
 
 Check status: Waiting for run confirmation.
 Screenshot to save: screenshots/12-game-results.png
+
+## Step 12: Run Confirmation
+- The user confirmed that the game flow worked correctly.
+
+## Step 13: Client Message Types and Error Scenarios
+- Separated game messages from normal responses by status code.
+- Added simple headings for questions, results and game end.
+- Kept the existing protocol and two-thread client structure.
+- Prepared three manual error scenarios:
+  unknown command, unknown category and invalid challenge ID.
+
+Check status: Waiting for run confirmation.
+Screenshot to save: screenshots/13-error-scenarios.png
