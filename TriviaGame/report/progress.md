@@ -36,3 +36,14 @@ Screenshot to save: screenshots/03-multiple-clients.png
 
 Test status: Waiting for test confirmation.
 Screenshot to save: screenshots/04-protocol-tests.png
+
+## Step 5: Commands and Responses
+- Connected the Protocol helper to the server and client.
+- Used separate threads for console input and server responses.
+- Added a synchronized server send method.
+- Added /exit to close the connection.
+- Returned 400 for unknown or not yet supported commands.
+- Challenge commands are not implemented yet.
+
+Test status: Waiting for test confirmation.
+Screenshot to save: screenshots/05-command-response.png

@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
@@ -19,10 +18,21 @@ public class ClientHandler implements Runnable {
         try (Socket connection = socket) {
             connection.setSoTimeout(90000);
 
-            InputStream input = connection.getInputStream();
+            String command;
 
-            while (input.read() != -1) {
-                // Message handling will be added in the next step.
+            while ((command = Protocol.readRequest(
+                    connection.getInputStream())) != null) {
+
+                System.out.println(
+                        "Client " + clientId + ": " + command);
+
+                if (command.equals("/exit")) {
+                    send(200, "OK", "Goodbye.");
+                    break;
+                }
+
+                send(400, "BAD_REQUEST",
+                        "Unknown or not yet supported command.");
             }
         } catch (SocketTimeoutException e) {
             System.out.println("Client " + clientId + " timed out.");
@@ -32,5 +42,11 @@ public class ClientHandler implements Runnable {
         } finally {
             System.out.println("Client " + clientId + " disconnected.");
         }
+    }
+
+    public synchronized void send(
+            int code, String message, String body) throws IOException {
+        Protocol.writeResponse(
+                socket.getOutputStream(), code, message, body);
     }
 }
